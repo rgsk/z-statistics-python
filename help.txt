@@ -1,0 +1,2 @@
+//          file or folder    extension     command to execute
+nodemon --watch practice.py -e py --exec "mypy practice.py && python practice.py"
