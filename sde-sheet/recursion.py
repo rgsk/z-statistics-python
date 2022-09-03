@@ -76,4 +76,40 @@ def test_get_subsets():
     print(get_subsets_optimized(arr4))
 
 
-test_get_subset_sums()
+def combination_sum_1_helper(arr: list[int], remaining_target: int, index: int, current_map: dict[int, int], final_ans: list[list[int]]):
+    if remaining_target == 0:
+        solution: list[int] = []
+        for (value, times) in current_map.items():
+            for i in range(times):
+                solution.append(value)
+        final_ans.append(solution)
+        return
+    n = len(arr)
+    if index == n:
+        return
+    for i in range(remaining_target//arr[index] + 1):
+        current_map[arr[index]] = i
+        combination_sum_1_helper(
+            arr, remaining_target - arr[index] * i, index + 1, current_map, final_ans)
+
+
+def combination_sum_1(arr: list[int], target: int):
+    final_ans: list[list[int]] = []
+    current_map: dict[int, int] = {}
+    combination_sum_1_helper(arr, target, 0, current_map, final_ans)
+    return final_ans
+
+
+def test_combination_sum_1():
+    arr1 = [2, 3, 6, 7]
+    target1 = 8
+    print(combination_sum_1(arr1, target1))
+    arr2 = [2]
+    target2 = 1
+    print(combination_sum_1(arr2, target2))
+    arr3 = [3, 9, 10]
+    target3 = 19
+    print(combination_sum_1(arr3, target3))
+
+
+test_combination_sum_1()
