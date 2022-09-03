@@ -1,5 +1,6 @@
 # nodemon --watch recursion.py -e py --exec "mypy recursion.py && python recursion.py"
 
+
 def get_subset_sums_helper(arr: list[int], index: int, current_sum: int, final_ans: list[int]):
     n = len(arr)
     if index == n:
@@ -112,4 +113,70 @@ def test_combination_sum_1():
     print(combination_sum_1(arr3, target3))
 
 
-test_combination_sum_1()
+def combination_sum_2_helper(arr: list[int], remaining_target: int, index: int, current_list: list[int], final_ans: list[list[int]]):
+    if remaining_target == 0:
+        cur_copy = current_list.copy()
+        if cur_copy not in final_ans:
+            final_ans.append(cur_copy)
+        return
+    n = len(arr)
+    if index == n:
+        return
+
+    # include
+    current_list.append(arr[index])
+    combination_sum_2_helper(
+        arr, remaining_target - arr[index], index + 1, current_list, final_ans)
+    current_list.pop()
+    # exclude
+    combination_sum_2_helper(
+        arr, remaining_target, index + 1, current_list, final_ans)
+
+
+def combination_sum_2(arr: list[int], target: int):
+    final_ans: list[list[int]] = []
+    current_list: list[int] = []
+    combination_sum_2_helper(sorted(arr), target, 0, current_list, final_ans)
+    return final_ans
+
+
+def get_combination_sum_2_optimized_helper(index: int, arr: list[int], current_arr: list[int], final_ans: list[list[int]], cur_sum: int, target: int):
+    arr_copy = current_arr.copy()
+    if cur_sum == target:
+        final_ans.append(arr_copy)
+    for i in range(index, len(arr)):
+        if (i != index and arr[i] == arr[i-1]):
+            continue
+        current_arr.append(arr[i])
+        get_combination_sum_2_optimized_helper(
+            i + 1, arr, current_arr, final_ans, cur_sum + arr[i], target)
+        current_arr.pop()
+
+
+def get_combination_sum_2_optimized(arr: list[int], target: int):
+    final_ans: list[list[int]] = []
+    current_arr: list[int] = []
+    get_combination_sum_2_optimized_helper(
+        0, sorted(arr), current_arr, final_ans, 0, target)
+    return final_ans
+
+
+def test_combination_sum_2():
+    arr1 = [2, 3, 6, 7, 5]
+    target1 = 8
+    print(get_combination_sum_2_optimized(arr1, target1))
+    arr2 = [2]
+    target2 = 1
+    print(get_combination_sum_2_optimized(arr2, target2))
+    arr3 = [3, 9, 10, 16, 1, 15, 2]
+    target3 = 21
+    print(get_combination_sum_2_optimized(arr3, target3))
+    arr4 = [10, 1, 2, 7, 6, 1, 5]
+    target4 = 8
+    print(get_combination_sum_2_optimized(arr4, target4))
+    arr5 = [2, 5, 2, 1, 2]
+    target5 = 5
+    print(get_combination_sum_2_optimized(arr5, target5))
+
+
+test_combination_sum_2()
