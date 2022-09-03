@@ -1,6 +1,11 @@
 # nodemon --watch recursion.py -e py --exec "mypy recursion.py && python recursion.py"
 
 
+from calendar import c
+import itertools
+from math import factorial
+
+
 def get_subset_sums_helper(arr: list[int], index: int, current_sum: int, final_ans: list[int]):
     n = len(arr)
     if index == n:
@@ -179,4 +184,79 @@ def test_combination_sum_2():
     print(get_combination_sum_2_optimized(arr5, target5))
 
 
-test_combination_sum_2()
+def is_palindrome(items: list | str, start: int, end: int):
+    while start < end:
+        if items[start] != items[end]:
+            return False
+        start += 1
+        end -= 1
+    return True
+
+
+def palindrome_partitioning_helper(s: str, index: int, cur_partitions: list[str], final_ans: list[list[str]]):
+    if index == len(s):
+        copied = cur_partitions.copy()
+        final_ans.append(copied)
+        return
+
+    for i in range(index, len(s)):
+        if (is_palindrome(s, index, i)):
+            partition = s[index: i+1]
+            cur_partitions.append(partition)
+            palindrome_partitioning_helper(s, i+1, cur_partitions, final_ans)
+            cur_partitions.pop()
+
+
+def palindrome_partitioning(s: str):
+    cur_partitions: list[str] = []
+    final_ans: list[list[str]] = []
+    palindrome_partitioning_helper(s, 0, cur_partitions, final_ans)
+    return final_ans
+
+
+def test_palindrome_partitioning():
+    s1 = 'aab'
+    print(palindrome_partitioning(s1))
+    s2 = 'aabb'
+    print(palindrome_partitioning(s2))
+
+
+def find_kth_permutation(n: int, k: int):
+    perms = list(itertools.permutations(range(1, n+1)))
+    return "".join([str(v) for v in perms[k-1]])
+
+
+def find_kth_permutation_optimized_helper(n: int, k: int, ans: list[int], index: int, perms: list[int]):
+    if index == len(ans):
+        return
+    one_less_factorial = factorial(n - 1)
+    index_choosen = k // one_less_factorial if k / \
+        one_less_factorial > k // one_less_factorial else k // one_less_factorial - 1
+    ans[index] = perms[index_choosen]
+    perms.pop(index_choosen)
+    find_kth_permutation_optimized_helper(
+        n-1, k - index_choosen * one_less_factorial, ans, index + 1, perms)
+
+
+def find_kth_permutation_optimized(n: int, k: int):
+    ans: list[int] = [0] * n
+    perms = [i+1 for i in range(n)]
+    find_kth_permutation_optimized_helper(n, k, ans, 0, perms)
+    return ans
+
+
+def test_find_kth_permutation():
+    # print(find_kth_permutation_optimized(3, 1))
+
+    for i in range(1, 25):
+        print(find_kth_permutation_optimized(4, i))
+
+
+test_find_kth_permutation()
+
+'''
+3
+1, 2, 3, 4
+5
+
+'''
