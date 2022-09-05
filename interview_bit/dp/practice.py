@@ -1,0 +1,6 @@
+txt1 = "My name is {fname}, I'm {age}".format(age=36, fname="John")
+print(txt1)
+txt2 = "My name is {1}, I'm {0}".format("John", 36)
+print(txt2)
+txt3 = "My name is {}, I'm {}".format(36, "John")
+print(txt3)
